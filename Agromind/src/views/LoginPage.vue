@@ -9,7 +9,7 @@
             </div>
         </header>
         <main class="main-content">
-            <h1 class="welcome">Faça seu login</h1>
+            <h1 class="title">Faça seu login</h1>
             <form class="login-form" @submit.prevent="handleLogin">
                 <div class="input-group">
                     <label for="username"><strong>Usuário</strong></label>
@@ -48,6 +48,7 @@
                 </button>
             </form>
         </main>
+<router-link to="/" class="backpage"><strong>← Voltar</strong></router-link>
         <footer>
             Todos os direitos reservados - Agromind 2025
         </footer>
@@ -128,7 +129,8 @@ const handleLogin = async () => {
 }
 
 img {
-    height: 50px;
+    width: auto;
+    height: 60px; 
 }
 
 .main-content {
@@ -139,9 +141,9 @@ img {
     padding: 40px 20px;
 }
 
-.welcome {
+.title {
     font-family: 'Inter', sans-serif;
-    font-size: 2.5rem;
+    font-size: 3.2rem;
     margin-bottom: 30px;
     color: #333;
 }
@@ -260,6 +262,13 @@ img {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.backpage {
+    text-decoration: none;
+    color: #333;
+    margin-left: 60px;
+    margin-bottom: 30px;
 }
 
 footer {

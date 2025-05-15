@@ -8,14 +8,15 @@
                 </div>
             </div>
         </header>
-                    <h1 class="welcome">Welcome,
+                    <h1 class="title">
+                    Welcome,
                 <br>Bem-vindo,
                 <br>Benvenuto,
                 <br>Bienvenido,
                 <br>歡迎</h1>
         <main class="main-content">
             <div class="button-container">
-                <button class="login-button"><strong>Fazer login</strong></button>
+                <router-link to="/login" class="login-button"><strong>Fazer login</strong></router-link>
             </div>
         </main>
     </div>
@@ -68,12 +69,10 @@ img {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     flex-grow: 1;
-    padding: 5px 5px; 
+    padding: 40px 20px;
 }
-
-.welcome {
+.title {
     font-family: 'Inter', sans-serif;
     text-align: center;
     font-size: 53px;
@@ -97,6 +96,7 @@ img {
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
     font-weight: 500;
+    text-decoration: none;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;

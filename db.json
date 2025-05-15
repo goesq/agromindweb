@@ -5,6 +5,24 @@
       "username": "Victor",
       "password": "1234",
       "name": "Victor"
+    },
+    {
+      "id": 2,
+      "username": "Nicolas",
+      "password": "1234",
+      "name": "Nicolas"
+    },
+    {
+      "id": 3,
+      "username": "Thales",
+      "password": "1234",
+      "name": "Thales"
+    },
+    {
+      "id": 4,
+      "username": "Operador",
+      "password": "1234",
+      "name": "Operador"
     }
   ]
 }
