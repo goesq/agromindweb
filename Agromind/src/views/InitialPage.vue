@@ -8,12 +8,12 @@
                 </div>
             </div>
         </header>
-        <main class="main-content">
-            <h1 class="welcome">Welcome,
+                    <h1 class="welcome">Welcome,
                 <br>Bem-vindo,
                 <br>Benvenuto,
                 <br>Bienvenido,
                 <br>歡迎</h1>
+        <main class="main-content">
             <div class="button-container">
                 <button class="login-button"><strong>Fazer login</strong></button>
             </div>
@@ -55,11 +55,8 @@
 .agromind {
     font-family: 'Poppins', sans-serif;
     font-size: 2.5rem;
-    font-weight: 500;
     margin: 0;
-    color: #333;
-    text-transform: lowercase;
-    letter-spacing: 0.5px;
+    color: rgb(1, 34, 1);
 }
 
 img {
@@ -73,21 +70,21 @@ img {
     align-items: center;
     justify-content: center;
     flex-grow: 1;
-    padding: 10px 20px; 
+    padding: 5px 5px; 
 }
 
 .welcome {
     font-family: 'Inter', sans-serif;
     text-align: center;
     font-size: 53px;
-    margin: 20px 0;
+    margin: 60px 0;
 }
 
 .button-container {
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 0px;
 }
 
 .login-button {
