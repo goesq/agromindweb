@@ -7,6 +7,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import InitialPage from './views/InitialPage.vue'
 import LoginPage from './views/LoginPage.vue'
 import PrincipalPage from './views/PrincipalPage.vue'
+import DashboardPage from './views/DashboardPage.vue'
 
 const routes = [
   {
@@ -23,6 +24,11 @@ const routes = [
     path: '/principal',
     name: 'PrincipalPage',
     component: PrincipalPage
+  },
+  {
+    path: '/dashboard',
+    name: 'DashboardPage',
+    component: DashboardPage
   }
 ]
 
