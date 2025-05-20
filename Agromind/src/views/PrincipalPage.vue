@@ -3,8 +3,10 @@
         <header>
             <div class="header-content">
                 <div class="logo">
-                    <img src="../assets/logo.png" alt="Logo">
-                </div>
+            <router-link to="/principal">
+                <img src="../assets/logo.png" alt="Logo">
+            </router-link>
+            </div>
                 <nav class="navbar">
                     <router-link to="/dashboard" class="nav-link"><strong>Dashboard</strong></router-link>
                     <router-link to="/chatbot" class="nav-link"><strong>AgroBot</strong></router-link>
