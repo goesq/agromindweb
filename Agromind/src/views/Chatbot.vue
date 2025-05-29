@@ -1,10 +1,9 @@
 <template>
     <div class="app-container">
-        <!-- Seu header mantido exatamente igual -->
         <header>
             <div class="header-content">
                 <div class="logo">
-                    <router-link to="/principal-page">
+                    <router-link to="/principal">
                         <img src="../assets/logo.png" alt="Logo">
                     </router-link>
                 </div>
