@@ -24,17 +24,20 @@ const routes = [
   {
     path: '/principal',
     name: 'PrincipalPage',
-    component: PrincipalPage
+    component: PrincipalPage,
+    meta: { requiresAuth: true }
   },
   {
     path: '/dashboard',
     name: 'DashboardPage',
-    component: DashboardPage
+    component: DashboardPage,
+    meta: { requiresAuth: true }
   },
   {
     path: '/chatbot',
     name: 'Chatbot',
-    component: Chatbot
+    component: Chatbot,
+    meta: { requiresAuth: true }
   }
 ]
 

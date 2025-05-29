@@ -10,7 +10,7 @@
                 <nav class="navbar">
                     <router-link to="/dashboard" class="nav-link"><strong>Dashboard</strong></router-link>
                     <router-link to="/chatbot" class="nav-link"><strong>AgroBot</strong></router-link>
-                    <router-link to="/" class="nav-link"><strong>Sair</strong></router-link>
+                    <a href="#" class="nav-link" @click.prevent="handleLogout"><strong>Sair</strong></a>
                 </nav>
             </div>
         </header>
@@ -31,7 +31,7 @@
                 
                 <p class="text">Totalmente voltado ao <strong>agronegócio</strong>, o <strong>Agromind</strong> alia tecnologia de ponta<br>à simplicidade de uso, oferecendo uma solução <strong>confiável</strong> e escalável<br>para produtores, técnicos e gestores do campo.</p>
 
-                <p class="text">O <strong>Agromind</strong> segue firme no propósito de levar tecnologia <strong>simples</strong> e <br><strong>inteligente</strong> ao agronegócio brasileiro.</p>
+                <p class="text">O <strong>Agromind</strong> segue firme no propósito de levar tecnologia <strong>simples</strong> e <br><strong>inteligente</strong> ao agronegócio mundial.</p>
             </div>
             <h1 class="title">Contamos com</h1>
             <ul class="update-list">
@@ -49,6 +49,15 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const handleLogout = () => {
+  localStorage.removeItem('isAuthenticated')
+  localStorage.removeItem('user')
+  router.push('/')
+}
 </script>
 
 <style scoped>

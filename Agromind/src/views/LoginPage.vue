@@ -48,7 +48,7 @@
                 </button>
             </form>
         </main>
-<router-link to="/" class="backpage"><strong>← Voltar</strong></router-link>
+        <router-link to="/" class="backpage"><strong>← Voltar</strong></router-link>
         <footer>
             Todos os direitos reservados - Agromind 2025
         </footer>
@@ -57,7 +57,9 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const username = ref('');
 const password = ref('');
 const loading = ref(false);
@@ -82,7 +84,15 @@ const handleLogin = async () => {
         if (userData.length > 0) {
             loginMessage.value = `Bem-vindo, ${userData[0].name || username.value}!`;
             loginSuccess.value = true;
-            // Redirecionamento ou lógica após login aqui
+            
+            // Armazena os dados do usuário no localStorage
+            localStorage.setItem('user', JSON.stringify(userData[0]));
+            localStorage.setItem('isAuthenticated', 'true');
+            
+            // Redireciona para a página principal após 1 segundo
+            setTimeout(() => {
+                router.push('/principal');
+            }, 1000);
         } else {
             loginMessage.value = 'Usuário ou senha incorretos';
             loginError.value = true;

@@ -17,13 +17,19 @@
         <main class="main-content">
             <h1 class="title">Medidores</h1>
             <h5 class="subtitle">Temperatura</h5>
+            <div class="cards-grid">
+            <TemperatureCard />
+            </div>
             <h5 class="subtitle">Umidade</h5>
+            <div class="cards-grid">
+                <HumidityCard />
+            </div>
             <h5 class="subtitle">Bomba</h5>
             <label class="switch">
             <input type="checkbox">
             <span class="slider round"></span>
-            <p class="text">Lembre-se de sempre desligar a bomba para evitar correr riscos.</p>
-            </label>
+        </label>
+        <p class="text">Lembre-se de sempre desligar a bomba para evitar correr riscos.</p>
         </main>
         <footer>
             Todos os direitos reservados - Agromind 2025
@@ -32,6 +38,9 @@
 </template>
 
 <script setup>
+import TemperatureCard from '@/components/TemperatureCard.vue';
+import HumidityCard from '@/components/HumidityCard.vue';   
+
 </script>
 
 <style scoped>
@@ -97,11 +106,15 @@ img {
 .main-content {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; /* Centraliza os itens horizontalmente, como títulos */
     flex-grow: 1;
     padding: 40px 20px;
-    max-width: 1200px;
+    /* AQUI: PRINCIPAL ALTERAÇÃO PARA TORNAR O CONTEÚDO MAIS LARGO */
+    max-width: 90%; /* Ajuste para 90% da largura da viewport */
+    /* Você pode usar um valor fixo maior, por exemplo: max-width: 1400px; */
+    width: 100%; /* Garante que ocupe a largura disponível até o max-width */
     margin: 0 auto;
+    box-sizing: border-box; /* Essencial para que o padding não adicione à largura total */
 }
 
 .title {
@@ -116,6 +129,22 @@ img {
     font-size: 1.5rem;
     margin-bottom: 30px;
     color: #333;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 30px; 
+    width: 100%;
+    justify-items: center; 
+    margin-bottom: 30px;
+}
+
+.text {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    max-width: 400px;
 }
 
 .switch {
