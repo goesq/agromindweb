@@ -18,9 +18,12 @@
     <main class="main-content">
       <h1 class="title">Olá, sou o AgroBot,<br />como posso ajudar?</h1>
 
-      <!-- Chat manual -->
       <div class="chat-messages">
-        <div v-for="(msg, index) in messages" :key="index" :class="['message', msg.sender + '-message']">
+        <div
+          v-for="(msg, index) in messages"
+          :key="index"
+          :class="['message', msg.sender + '-message']"
+        >
           <div class="message-content">{{ msg.content }}</div>
         </div>
       </div>
@@ -34,31 +37,19 @@
           :disabled="loading"
         />
         <button @click="sendMessage" :disabled="loading">
-          {{ loading ? 'Enviando...' : 'Enviar' }}
+          {{ loading ? "Enviando..." : "Enviar" }}
         </button>
       </div>
-
-      <!-- Langflow Chat incorporado -->
-      <langflow-chat
-        window_title="AgroBot - IA"
-        flow_id="c75f677d-3bbd-4043-94bd-6df0d4aa4712"
-        host_url="https://nicolakskk-spaceintegrador.hf.space"
-      ></langflow-chat>
     </main>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import axios from 'axios';
+import { ref } from "vue";
+import axios from "axios";
 
-defineOptions({
-  compilerOptions: {
-    isCustomElement: tag => tag === 'langflow-chat'
-  }
-});
-
-const userInput = ref('');
+// Remover a configuração compilerOptions (não é necessária)
+const userInput = ref("");
 const messages = ref([]);
 const loading = ref(false);
 
@@ -66,65 +57,52 @@ const sendMessage = async () => {
   if (!userInput.value.trim() || loading.value) return;
 
   const userMessage = userInput.value;
-  messages.value.push({ sender: 'user', content: userMessage });
-  userInput.value = '';
+  messages.value.push({ sender: "user", content: userMessage });
+  userInput.value = "";
   loading.value = true;
 
   try {
-    // Conexão rápida (pinga)
-    await axios.get('https://nicolakskk-spaceintegrador.hf.space/api/v1/run/739b69e1-96c0-49bb-8ce0-7fc53ca19862', {
-      timeout: 3000,
-    });
+    const payload = {
+      input_value: userMessage,
+      output_type: "chat",
+      input_type: "chat",
+      session_id: "user_1", // você pode gerar IDs dinâmicos se quiser
+    };
 
     const response = await axios.post(
-      'https://nicolakskk-spaceintegrador.hf.space/api/v1/run/739b69e1-96c0-49bb-8ce0-7fc53ca19862',
+      "https://nicolakskk-spaceintegrador.hf.space/api/v1/run/c75f677d-3bbd-4043-94bd-6df0d4aa4712",
+      payload,
       {
-        input_value: userMessage,
-        tweaks: {},
-        stream: false
-      },
-      {
-        timeout: 15000,
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
       }
     );
 
+    // Log pra ver o que a API retornou
     console.log("Resposta da API:", response.data);
 
-    const rawResponse = response.data.result || response.data.output || response.data?.data || null;
-
-    if (!rawResponse) throw new Error('Resposta vazia da API');
-
-    const cleanResponse = (text) => {
-      if (typeof text !== 'string') return "Resposta inválida do servidor";
-      return text
-        .replace(/\n{3,}/g, '\n\n')
-        .replace(/\*\*/g, '')
-        .trim();
-    };
+    // Ajuste na forma de acessar a resposta
+    const botReply = response.data.outputs && response.data.outputs[0]
+      ? response.data.outputs[0].text // Aqui estou assumindo que o campo correto é "text" dentro de "outputs[0]"
+      : "Sem resposta";
 
     messages.value.push({
-      sender: 'bot',
-      content: cleanResponse(rawResponse)
+      sender: "bot",
+      content: typeof botReply === "string" ? botReply : JSON.stringify(botReply),
     });
-
   } catch (error) {
     console.error("Erro:", error);
     let errorMessage = "Erro de conexão com o serviço";
-    if (error.code === 'ECONNABORTED') {
+    if (error.code === "ECONNABORTED") {
       errorMessage = "Tempo de resposta excedido (15s)";
     } else if (error.response?.status === 404) {
       errorMessage = "Endpoint não encontrado";
-    } else if (error.message.includes('Resposta vazia')) {
-      errorMessage = "O serviço respondeu sem dados";
     }
-
     messages.value.push({
-      sender: 'bot',
-      content: `${errorMessage}. Por favor, tente novamente mais tarde.`
+      sender: "bot",
+      content: `${errorMessage}. Por favor, tente novamente mais tarde.`,
     });
   } finally {
     loading.value = false;
@@ -141,7 +119,7 @@ const sendMessage = async () => {
 
 header {
   background-color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 10px 0;
 }
 
@@ -172,7 +150,7 @@ img {
 .nav-link {
   text-decoration: none;
   color: #333;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 1rem;
   font-weight: 500;
   padding: 8px 0;
@@ -199,7 +177,7 @@ img {
 }
 
 .title {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 3.2rem;
   margin-bottom: 30px;
   color: #333;
@@ -213,6 +191,8 @@ img {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .message {
@@ -251,7 +231,7 @@ img {
   padding: 12px 20px;
   border: 1px solid #ddd;
   border-radius: 24px;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 1rem;
 }
 
@@ -262,7 +242,7 @@ img {
   border: none;
   border-radius: 24px;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .chat-input button:disabled {
@@ -270,10 +250,15 @@ img {
   cursor: not-allowed;
 }
 
+/* Estiliza o componente langflow-chat para ficar fixo no canto inferior direito */
 langflow-chat {
   position: fixed;
   bottom: 20px;
   right: 20px;
+  width: 400px;
+  height: 600px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 9999;
 }
 </style>

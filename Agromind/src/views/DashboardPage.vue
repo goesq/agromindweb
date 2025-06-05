@@ -1,46 +1,109 @@
 <template>
-    <div class="app-container">
-        <header>
-            <div class="header-content">
-                <div class="logo">
-                    <router-link to="/principal">
-                    <img src="../assets/logo.png" alt="Logo">
-                    </router-link>
-                </div>
-                <nav class="navbar">
-                    <router-link to="/dashboard" class="nav-link"><strong>Dashboard</strong></router-link>
-                    <router-link to="/chatbot" class="nav-link"><strong>AgroBot</strong></router-link>
-                    <router-link to="/" class="nav-link"><strong>Sair</strong></router-link>
-                </nav>
-            </div>
-        </header>
-        <main class="main-content">
-            <h1 class="title">Medidores</h1>
-            <h5 class="subtitle">Temperatura</h5>
-            <div class="cards-grid">
-            <TemperatureCard />
-            </div>
-            <h5 class="subtitle">Umidade</h5>
-            <div class="cards-grid">
-                <HumidityCard />
-            </div>
-            <h5 class="subtitle">Bomba</h5>
-            <label class="switch">
-            <input type="checkbox">
+  <div class="app-container">
+    <header>
+      <div class="header-content">
+        <div class="logo">
+          <router-link to="/principal">
+            <img src="../assets/logo.png" alt="Logo">
+          </router-link>
+        </div>
+        <nav class="navbar">
+          <router-link to="/dashboard" class="nav-link"><strong>Dashboard</strong></router-link>
+          <router-link to="/chatbot" class="nav-link"><strong>AgroBot</strong></router-link>
+          <router-link to="/" class="nav-link"><strong>Sair</strong></router-link>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <h1 class="title">Medidores</h1>
+
+      <div v-if="loading" class="loading">Carregando...</div>
+      <div v-else-if="error" class="error">{{ error }}</div>
+      <div v-else>
+        <section>
+          <h5 class="subtitle">Temperatura</h5>
+          <div class="cards-grid">
+            <div class="card">{{ temperatura }} °C</div>
+          </div>
+
+          <h5 class="subtitle">Umidade</h5>
+          <div class="cards-grid">
+            <div class="card">{{ umidade }}%</div>
+          </div>
+
+          <h5 class="subtitle">Umidade do Solo</h5>
+          <div class="cards-grid">
+            <div class="card">{{ sensorUmidSolo }}%</div>
+          </div>
+
+          <h5 class="subtitle">pH</h5>
+          <div class="cards-grid">
+            <div class="card">{{ ph }}</div>
+          </div>
+
+          <h5 class="subtitle">Bomba</h5>
+          <label class="switch">
+            <input type="checkbox" :checked="bomba === 1" @change="toggleBomba">
             <span class="slider round"></span>
-        </label>
-        <p class="text">Lembre-se de sempre desligar a bomba para evitar correr riscos.</p>
-        </main>
-        <footer>
-            Todos os direitos reservados - Agromind 2025
-        </footer>
-    </div>
+          </label>
+          <p class="text">Lembre-se de sempre desligar a bomba para evitar correr riscos.</p>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      Todos os direitos reservados - Agromind 2025
+    </footer>
+  </div>
 </template>
 
 <script setup>
-import TemperatureCard from '@/components/TemperatureCard.vue';
-import HumidityCard from '@/components/HumidityCard.vue';   
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
+const temperatura = ref(null);
+const umidade = ref(null);
+const bomba = ref(null);
+const sensorUmidSolo = ref(null);
+const ph = ref(null);
+const loading = ref(true);
+const error = ref(null);
+
+const apiURL = 'https://apiintegradoresp-production.up.railway.app';
+
+const fetchData = async () => {
+  loading.value = true;
+  error.value = null;
+  try {
+    const response = await axios.get(`${apiURL}/dados`);
+    const dados = response.data;
+    temperatura.value = dados.temperatura;
+    umidade.value = dados.umidade;
+    bomba.value = dados.bomba;
+    sensorUmidSolo.value = dados.sensor_umidsolo;
+    ph.value = dados.pH;
+  } catch (e) {
+    error.value = 'Erro ao carregar os dados';
+  } finally {
+    loading.value = false;
+  }
+};
+
+const toggleBomba = async () => {
+  const novoEstado = bomba.value === 1 ? 0 : 1;
+  try {
+    await axios.post(`${apiURL}/bomba`, { estado: novoEstado });
+    await fetchData();
+  } catch (e) {
+    error.value = 'Erro ao atualizar a bomba';
+  }
+};
+
+onMounted(() => {
+  fetchData();
+  setInterval(fetchData, 10000); // atualiza a cada 10s
+});
 </script>
 
 <style scoped>
@@ -48,103 +111,118 @@ import HumidityCard from '@/components/HumidityCard.vue';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
 
 .app-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 header {
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 10px 0;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 10px 0;
 }
 
 .header-content {
-    display: flex;
-    justify-content: space-between;
-    max-width: 1800px;
-    margin: 0 auto;
-    padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .logo {
-    display: flex;
-    align-items: left;
+  display: flex;
+  align-items: left;
 }
 
 img {
-    width: auto;
-    height: 60px; 
+  width: auto;
+  height: 60px;
 }
 
 .navbar {
-    display: flex;
-    gap: 42px;
-    padding: 9px;
+  display: flex;
+  gap: 42px;
+  padding: 9px;
 }
 
 .nav-link {
-    text-decoration: none;
-    color: #333;
-    font-family: 'Inter', sans-serif;
-    font-size: 1rem;
-    font-weight: 500;
-    padding: 8px 0;
-    position: relative;
-    transition: color 0.3s ease;
+  text-decoration: none;
+  color: #333;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 8px 0;
+  position: relative;
+  transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-    color: rgb(57, 135, 236);
+  color: rgb(57, 135, 236);
 }
 
 .nav-link.router-link-exact-active {
-    color: rgb(57, 135, 236);
-    border-bottom: 2px solid rgb(57, 135, 236);
+  color: rgb(57, 135, 236);
+  border-bottom: 2px solid rgb(57, 135, 236);
 }
 
 .main-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centraliza os itens horizontalmente, como títulos */
-    flex-grow: 1;
-    padding: 40px 20px;
-    /* AQUI: PRINCIPAL ALTERAÇÃO PARA TORNAR O CONTEÚDO MAIS LARGO */
-    max-width: 90%; /* Ajuste para 90% da largura da viewport */
-    /* Você pode usar um valor fixo maior, por exemplo: max-width: 1400px; */
-    width: 100%; /* Garante que ocupe a largura disponível até o max-width */
-    margin: 0 auto;
-    box-sizing: border-box; /* Essencial para que o padding não adicione à largura total */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  padding: 40px 20px;
+  max-width: 90%;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .title {
-    font-family: 'Inter', sans-serif;
-    font-size: 3.2rem;
-    margin-bottom: 30px;
-    color: #333;
+  font-family: 'Inter', sans-serif;
+  font-size: 3.2rem;
+  margin-bottom: 30px;
+  color: #333;
 }
 
 .subtitle {
-    font-family: 'Inter', sans-serif;
-    font-size: 1.5rem;
-    margin-bottom: 30px;
-    color: #333;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+  color: #333;
 }
 
 .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-    gap: 30px; 
-    width: 100%;
-    justify-items: center; 
-    margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  width: 100%;
+  justify-items: center;
+  margin-bottom: 30px;
+}
+
+.card {
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  background-color: #f9f9f9;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 300px;
 }
 
 .text {
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    max-width: 400px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  max-width: 400px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  padding: 20px;
 }
 
 .switch {
@@ -168,7 +246,6 @@ img {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
   transition: .4s;
 }
 
@@ -180,7 +257,6 @@ img {
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
   transition: .4s;
 }
 
@@ -193,8 +269,6 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
   transform: translateX(26px);
 }
 
@@ -206,19 +280,12 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-.text {
-    font-size: 1rem;
-    margin-bottom: 20px;
-    line-height: 1.6;
-    padding: 20px;
-}
-
 footer {
-    text-align: center;
-    padding: 15px;
-    font-size: 0.8rem;
-    color: #666;
-    background-color: white;
-    border-top: 1px solid #eee;
+  text-align: center;
+  padding: 15px;
+  font-size: 0.8rem;
+  color: #666;
+  background-color: white;
+  border-top: 1px solid #eee;
 }
 </style>
