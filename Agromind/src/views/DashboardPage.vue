@@ -43,10 +43,12 @@
           </div>
 
           <h5 class="subtitle">Bomba</h5>
-          <label class="switch">
-            <input type="checkbox" :checked="bomba === 1" @change="toggleBomba">
-            <span class="slider round"></span>
-          </label>
+          <div class="switch-container">
+            <label class="switch">
+              <input type="checkbox" :checked="bomba === 1" @change="toggleBomba">
+              <span class="slider round"></span>
+            </label>
+          </div>
           <p class="text">Lembre-se de sempre desligar a bomba para evitar correr riscos.</p>
         </section>
       </div>
@@ -75,8 +77,10 @@ const apiURL = 'https://apiintegradoresp-production.up.railway.app';
 const fetchData = async () => {
   loading.value = true;
   error.value = null;
+  console.log('Iniciando a chamada à API...'); // Log de início
   try {
     const response = await axios.get(`${apiURL}/dados`);
+    console.log('Resposta da API:', response.data); // Log da resposta
     const dados = response.data;
     temperatura.value = dados.temperatura;
     umidade.value = dados.umidade;
@@ -84,11 +88,19 @@ const fetchData = async () => {
     sensorUmidSolo.value = dados.sensor_umidsolo;
     ph.value = dados.pH;
   } catch (e) {
+    console.error('Erro ao carregar os dados:', e); // Log do erro
     error.value = 'Erro ao carregar os dados';
   } finally {
     loading.value = false;
+    console.log('Chamada à API finalizada.'); // Log de finalização
   }
 };
+
+// Chama fetchData ao montar o componente
+onMounted(() => {
+  fetchData();
+  setInterval(fetchData, 20000); // atualiza a cada 20s
+});
 
 const toggleBomba = async () => {
   const novoEstado = bomba.value === 1 ? 0 : 1;
@@ -99,11 +111,6 @@ const toggleBomba = async () => {
     error.value = 'Erro ao atualizar a bomba';
   }
 };
-
-onMounted(() => {
-  fetchData();
-  setInterval(fetchData, 10000); // atualiza a cada 10s
-});
 </script>
 
 <style scoped>
@@ -190,6 +197,7 @@ img {
   font-size: 1.5rem;
   margin-bottom: 30px;
   color: #333;
+  text-align: center;
 }
 
 .cards-grid {
@@ -223,6 +231,12 @@ img {
   margin-bottom: 20px;
   line-height: 1.6;
   padding: 20px;
+}
+
+.switch-container {
+  display: flex;
+  justify-content: center; /* Centraliza o switch horizontalmente */
+  margin-bottom: 20px; /* Espaço abaixo do switch */
 }
 
 .switch {
